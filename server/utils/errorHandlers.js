@@ -43,4 +43,14 @@ const productionErrors = (err, req, res, next) => {
   });
 };
 
-module.exports = { notFound, developmentErrors, productionErrors };
+const asyncHandler = (promise) =>
+  promise
+    .then((data) => [null, data])
+    .catch((err) => Promise.resolve([err, null]));
+
+module.exports = {
+  notFound,
+  developmentErrors,
+  productionErrors,
+  asyncHandler,
+};
