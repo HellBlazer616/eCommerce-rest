@@ -29,8 +29,15 @@ const resize = async (req, res, next) => {
   }
   const extension = req.file.mimetype.split('/')[1];
   req.body.image = `${uuidv4()}.${extension}`;
-  // now we resize
-  const image = await jimp.read(req.file.buffer);
+
+  // now we resize. as of 22/5/2020 jimp has memory usage problem so file more that 4k will likely cause problem
+  const [err, image] = await asyncHandler(jimp.read(req.file.buffer));
+
+  if (err) {
+    console.log(err);
+    res.json({ ...err });
+    return;
+  }
   await image.resize(800, jimp.AUTO);
   await image.write(`../storage/uploads/${req.body.image}`);
   // once we have written the image to our filesystem, keep going!
@@ -52,18 +59,19 @@ const addValidator = [
     .withMessage('stock must be given and must  be numeric'),
 ];
 
+// save a single product
 const addController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { title, category: catagories, price, stock, image } = req.body;
+  const { title, category: catagories, price, stock, image, unit } = req.body;
 
   const category = catagories.split(',').map((item) => item.trim());
 
   const [err, data] = await asyncHandler(
-    Product.create({ title, category, price, stock, image })
+    Product.create({ title, category, price, stock, image, unit })
   );
 
   if (err) {
@@ -75,4 +83,53 @@ const addController = async (req, res) => {
   return res.json({ ..._doc, message: 'data saved' });
 };
 
-module.exports = { addController, upload, resize, addValidator };
+const getController = async (req, res) => {
+  const { limit = 0, category, title, stock, price, sort } = req.query;
+
+  const query = {};
+  if (category != null) {
+    query.category = { $in: [category] };
+  }
+  if (title != null) {
+    query.title = title.toLowerCase();
+  }
+  if (stock != null) {
+    if (stock.length > 1 && typeof stock !== 'string') {
+      query.stock = { $gte: Number(stock[0]), $lte: Number(stock[1]) };
+    } else {
+      query.stock = { $gte: Number(stock) };
+    }
+  }
+  if (price != null) {
+    if (price.length > 1 && typeof price !== 'string') {
+      query.price = { $gte: Number(price[0]), $lte: Number(price[1]) };
+    } else {
+      query.price = { $gte: Number(price) };
+    }
+  }
+  let sortValue = '';
+  if (sort != null) {
+    if (sort.length > 1 && typeof sort !== 'string') {
+      sortValue = sort.join(' ');
+    } else {
+      sortValue = sort;
+    }
+  }
+
+  console.log(query);
+
+  const [error, data] = await asyncHandler(
+    Product.find(query).limit(Number(limit)).sort(sortValue).lean().exec()
+  );
+  if (error) {
+    res.json(error);
+  } else {
+    res.json({
+      limit,
+      category,
+      data,
+    });
+  }
+};
+
+module.exports = { addController, upload, resize, addValidator, getController };

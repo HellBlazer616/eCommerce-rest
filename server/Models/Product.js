@@ -5,6 +5,7 @@ const productSchema = new mongoose.Schema(
     title: {
       type: String,
       required: 'Product must have a title',
+      lowercase: true,
     },
     image: {
       type: String,
@@ -16,12 +17,13 @@ const productSchema = new mongoose.Schema(
     }, // per quantity
     stock: {
       type: Number,
-      required: 'Product must have a <stock></stock> value',
+      required: 'Product must have a stock value',
     },
     category: [
       {
         type: String,
         required: 'A product must belong to a category',
+        lowercase: true,
       },
     ],
     expiryDate: {
@@ -30,6 +32,7 @@ const productSchema = new mongoose.Schema(
     unit: {
       type: String,
       default: '',
+      uppercase: true,
     },
   },
   { timestamps: true }

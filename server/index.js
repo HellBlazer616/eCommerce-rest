@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Make sure we are running node 7.6+
 const [major, minor] = process.versions.node.split('.').map(parseFloat);
 if (major < 7 || (major === 7 && minor <= 5)) {
-  console.log(`🙅‍♀️🙅‍♂️🚫🚫 Please use Node version 7.5 or higher🚫🚫🙅‍♀️🙅‍♂️`);
+  console.log(`🙅‍♀️🙅‍♂️🚫🚫 Please use Node version 7.6 or higher🚫🚫🙅‍♀️🙅‍♂️`);
   process.exit();
 }
 
