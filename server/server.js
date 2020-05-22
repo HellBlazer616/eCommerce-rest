@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
 const passport = require('passport');
-
+const mongoose = require('mongoose');
+const User = require('./Models/User');
 const router = require('./routes/routes');
 const {
   notFound,
@@ -12,20 +12,19 @@ const {
 } = require('./utils/errorHandlers');
 
 const app = express();
+// passport settings
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // registering middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+
 app.use(passport.initialize());
-app.use(passport.session());
+
 // registering middleware
 
 app.use('/', router);
