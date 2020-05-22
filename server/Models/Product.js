@@ -6,6 +6,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: 'Product must have a title',
       lowercase: true,
+      trim: true,
     },
     image: {
       type: String,
@@ -24,6 +25,7 @@ const productSchema = new mongoose.Schema(
         type: String,
         required: 'A product must belong to a category',
         lowercase: true,
+        trim: true,
       },
     ],
     expiryDate: {

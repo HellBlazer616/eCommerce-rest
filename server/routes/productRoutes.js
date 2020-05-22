@@ -6,6 +6,7 @@ const {
   resize,
   addValidator,
   getController,
+  queryValidator,
 } = require('../controllers/productController');
 
 const router = express.Router();
@@ -18,9 +19,9 @@ router.get('/', (req, res) => {
 });
 
 // get products
-router.get('/get', getController);
+router.get('/get', queryValidator, getController);
 
 // save single produce
-router.post('/save', upload, resize, addValidator, addController);
+router.post('/save', upload, addValidator, resize, addController);
 
 module.exports = router;
