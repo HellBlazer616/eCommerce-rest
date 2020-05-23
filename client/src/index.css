@@ -12,9 +12,14 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-::selection {
+/* ::selection {
 	background: #ffc600;
 	color: #000;
+} */
+
+::selection {
+	color: rgb(255, 255, 255);
+	background: rgb(123, 22, 255);
 }
 
 h1,

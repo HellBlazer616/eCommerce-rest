@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
 
-import { grey } from './utils/colors';
+import { grey, orange } from './utils/colors';
 import registerSvg from './assets/registerSvg.svg';
 import { Log, Content } from './utils/FormComponent';
 
@@ -25,7 +25,7 @@ const Register = () => {
               name="name"
               ref={register({
                 required: 'You must specify an name',
-                min: {
+                minLength: {
                   value: 3,
                   message: 'The name must be 3 characters or more',
                 },
@@ -33,7 +33,7 @@ const Register = () => {
             />
           </label>
 
-          {errors.name && <p className="error">You must specify a name</p>}
+          {errors.name && <p className="error">{errors.name.message}</p>}
 
           <label htmlFor="email">
             Email
@@ -57,7 +57,10 @@ const Register = () => {
               name="password"
               ref={register({
                 required: 'You must specify a password',
-                min: 6,
+                minLength: {
+                  value: 6,
+                  message: 'The password must be 6 characters or more',
+                },
                 validate: (value) => {
                   const message =
                     'Password must contain at least one letter, at least one number, and be longer than six characters';

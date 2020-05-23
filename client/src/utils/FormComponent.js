@@ -28,7 +28,9 @@ const Log = styled.div`
     flex-direction: column;
     justify-content: center;
     flex-basis: 50%;
-
+    @media only screen and (max-width: 767px) {
+      flex-basis: 70%;
+    }
     & .link {
       text-decoration: none;
       color: ${orange};
