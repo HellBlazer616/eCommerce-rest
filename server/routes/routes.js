@@ -30,5 +30,6 @@ router.post('/api/v1/logout', logout);
 router.post('/api/v1/login', login, signJwt);
 
 router.get('/api/v1/account', requireJwt, userInfo);
+router.put('/api/v1/account', requireJwt, updateUser);
 
 module.exports = router;

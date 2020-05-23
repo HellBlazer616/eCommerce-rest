@@ -15,9 +15,6 @@ const app = express();
 // passport settings
 passport.use(User.createStrategy());
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 // registering middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

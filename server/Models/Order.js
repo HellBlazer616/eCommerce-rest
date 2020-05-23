@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
   {
-    customerId: {
-      type: String,
-      required: 'An order must have a customer Id',
+    customer: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: 'An order must have a customer',
     },
     orderDate: {
       type: Date,
@@ -12,7 +13,7 @@ const orderSchema = new mongoose.Schema(
     },
     deliveryDate: {
       type: Date,
-      default: Date.now + 48 * 60 * 60 * 1000, // 48 hours from the order
+      default: Date.now() + 48 * 60 * 60 * 1000, // 48 hours from the order
     },
     orderItems: [
       {
@@ -21,6 +22,11 @@ const orderSchema = new mongoose.Schema(
         price: Number,
       },
     ],
+
+    completed: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
