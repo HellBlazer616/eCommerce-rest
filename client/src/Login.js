@@ -2,8 +2,9 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
 import { Link } from '@reach/router';
-import { black, grey, orange, error } from './utils/colors';
+import { grey } from './utils/colors';
 import enter from './assets/enter.svg';
+import { Log, Content } from './utils/FormComponent';
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm({});
@@ -61,8 +62,9 @@ const Login = () => {
             onClick={handleSubmit(onSubmit)}
           />
           <p>
+            {/* eslint-disable-next-line react/no-unescaped-entities */}
             Don't have an account?{' '}
-            <Link className="link" to="register">
+            <Link className="link" to="/register">
               Sign up
             </Link>
           </p>
@@ -81,81 +83,6 @@ const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-wrap: wrap;
-`;
-
-const Log = styled.div`
-  display: flex;
-  flex-grow: 1.5;
-  background: ${black};
-  min-width: 250px;
-  justify-content: center;
-
-  h1 {
-    color: ${grey};
-  }
-
-  & .form-control {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-basis: 50%;
-
-    & .link {
-      text-decoration: none;
-      color: ${orange};
-    }
-
-    & .error {
-      color: ${error};
-      font-size: 12px;
-      margin: 0;
-    }
-
-    p {
-      color: ${grey};
-    }
-
-    & .submit {
-      font-size: 20px;
-      margin-top: 1rem;
-    }
-
-    input {
-      display: block;
-      box-sizing: border-box;
-      width: 100%;
-      border-radius: 4px;
-      border: 1px solid white;
-      padding: 10px 15px;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
-
-    label {
-      line-height: 2;
-      text-align: left;
-      display: block;
-      margin-bottom: 13px;
-      margin-top: 20px;
-      color: white;
-      font-size: 16px;
-      font-weight: 200;
-    }
-  }
-`;
-
-const Content = styled.div`
-  flex-grow: 3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  img {
-    width: 40%;
-    height: auto;
-  }
-  overflow: hidden;
-
-  min-width: 350px;
 `;
 
 export default Login;
