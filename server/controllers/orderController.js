@@ -1,8 +1,13 @@
 const Order = require('../Models/Order');
 const { asyncHandler } = require('../utils/errorHandlers');
 
+/**
+ *
+ * @route /api/v1/order/new
+ * @method post
+ * @returns data save confirmation
+ */
 const orderSaveController = async (req, res) => {
-  //
   const { orderItems } = req.body;
   console.log(req.body);
   const { _id: customer } = req.user;
@@ -20,6 +25,12 @@ const orderSaveController = async (req, res) => {
   return res.json({ ..._doc, message: 'data saved' });
 };
 
+/**
+ *
+ * @route /api/v1/order/get
+ * @method get
+ * @returns user's order data
+ */
 const getUserOrder = async (req, res) => {
   const { _id: customer } = req.user;
   const [err, data] = await asyncHandler(

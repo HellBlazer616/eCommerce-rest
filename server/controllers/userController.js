@@ -2,6 +2,10 @@ const { body, validationResult } = require('express-validator');
 const User = require('../Models/User');
 const { asyncHandler } = require('../utils/errorHandlers');
 
+/**
+ *
+ * this is just a validation for user register data
+ */
 const validateRegister = [
   body('name', 'You must provide a name')
     .notEmpty()
@@ -19,6 +23,13 @@ const validateRegister = [
   ),
 ];
 
+/**
+ *
+ * @route /api/v1/register
+ * @method post
+ * @returns none
+ * @description just a middleware. Only saves user data after registration
+ */
 const register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -37,6 +48,14 @@ const register = async (req, res, next) => {
   return next();
 };
 
+/**
+ *
+ * @route /api/v1/account
+ * @method put
+ * @returns updated user info
+ * @description updates user data
+ */
+
 const updateUser = async (req, res) => {
   const { name, email } = req.body;
 
@@ -51,6 +70,13 @@ const updateUser = async (req, res) => {
   res.json(user);
 };
 
+/**
+ *
+ * @route /api/v1/account
+ * @method get
+ * @returns  user info
+ * @description finds current users data
+ */
 const userInfo = async (req, res) => {
   console.log(req?.isAuthenticated());
   const user = await User.findById(

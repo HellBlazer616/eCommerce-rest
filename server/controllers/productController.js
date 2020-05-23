@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const Product = require('../Models/Product');
 const { asyncHandler } = require('../utils/errorHandlers');
 
+// setting up multer for multipart form
 const multerOptions = {
   storage: multer.memoryStorage(),
   fileFilter(req, file, next) {
@@ -44,6 +45,7 @@ const resize = async (req, res, next) => {
   next();
 };
 
+// validator for add product
 const addValidator = [
   body('title')
     .isString()
@@ -59,8 +61,14 @@ const addValidator = [
     .withMessage('stock must be given and must be numeric'),
 ];
 
-// save a single product
-const addController = async (req, res) => {
+/**
+ *
+ * @route /api/v1/product/save
+ * @method post
+ * @returns  saved product's info
+ * @description saves product information to DB
+ */
+const addProduct = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -83,6 +91,7 @@ const addController = async (req, res) => {
   return res.json({ ..._doc, message: 'data saved' });
 };
 
+// validator for getProduct
 const queryValidator = [
   query('category').toArray(), // changing to array so if only one value is provided we do not de-structure string
 
@@ -107,7 +116,14 @@ const queryValidator = [
   query('sort').toArray(),
 ];
 
-const getController = async (req, res) => {
+/**
+ *
+ * @route /api/v1/product/get
+ * @method get
+ * @returns  product's info
+ * @description based on query param retrieves product info
+ */
+const getProduct = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -167,10 +183,10 @@ const getController = async (req, res) => {
 };
 
 module.exports = {
-  addController,
+  addProduct,
   upload,
   resize,
   addValidator,
-  getController,
+  getProduct,
   queryValidator,
 };

@@ -1,11 +1,11 @@
 const express = require('express');
 
 const {
-  addController,
+  addProduct,
   upload,
   resize,
   addValidator,
-  getController,
+  getProduct,
   queryValidator,
 } = require('../controllers/productController');
 
@@ -19,9 +19,9 @@ router.get('/', (req, res) => {
 });
 
 // get products
-router.get('/get', queryValidator, getController);
+router.get('/get', queryValidator, getProduct);
 
 // save single produce
-router.post('/save', upload, addValidator, resize, addController);
+router.post('/save', upload, addValidator, resize, addProduct);
 
 module.exports = router;
