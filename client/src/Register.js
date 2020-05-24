@@ -1,21 +1,61 @@
-import React from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
-
+import { navigate } from '@reach/router';
 import { grey } from './utils/colors';
 import registerSvg from './assets/registerSvg.svg';
 import { Log, Content } from './utils/FormComponent';
 
 const Register = () => {
   const { register, handleSubmit, errors, getValues } = useForm({});
+  const [formData, setFormData] = useState({});
+  const firstUpdate = useRef(true);
+  const onSubmit = (data) => {
+    console.log(data);
+    setFormData(data);
+  };
 
-  const onSubmit = (data) => console.log(data);
-  console.log(errors);
-  //
+  useLayoutEffect(() => {
+    // checking if its the initial mount if so canceling request
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    // encoding data for sending to server
+    const encodedData = Object.keys(formData)
+      .map((key) => {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(
+          formData[key]
+        )}`;
+      })
+      .join('&');
+
+    // making request to the register endpoint at server
+    async function setData() {
+      await fetch('/api/v1/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: encodedData,
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.token === undefined) return;
+
+          localStorage.setItem('eCommerce', response.token);
+
+          navigate(`/product`);
+        });
+    }
+
+    setData();
+  }, [formData]);
+
   return (
     <Wrapper>
       <Log>
-        <form className="form-control">
+        <form className="form-control" onSubmit={handleSubmit(onSubmit)}>
           <h1>Sign up</h1>
 
           <label htmlFor="name">
@@ -79,11 +119,11 @@ const Register = () => {
             <p className="error">{errors.password.message}</p>
           )}
 
-          <label htmlFor="confirmPassword">
+          <label htmlFor="passwordConfirm">
             Confirm Password
             <input
               type="password"
-              name="confirmPassword"
+              name="passwordConfirm"
               ref={register({
                 required: 'You must specify the confirm Password',
 
@@ -101,11 +141,7 @@ const Register = () => {
             <p className="error">{errors.confirmPassword.message}</p>
           )}
 
-          <input
-            className="submit"
-            type="submit"
-            onClick={handleSubmit(onSubmit)}
-          />
+          <input className="submit" type="submit" />
         </form>
       </Log>
       <Content>
