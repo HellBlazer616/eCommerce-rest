@@ -5,9 +5,7 @@ import { black, grey, orange, error } from './colors';
 const Log = styled.div`
   display: flex;
   flex-basis: 35%;
-
   background: ${black};
-  min-width: 250px;
   justify-content: center;
   text-align: center;
 
@@ -77,7 +75,6 @@ const Log = styled.div`
 
 const Content = styled.div`
   flex-basis: 60%;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -94,8 +91,6 @@ const Content = styled.div`
     height: auto;
   }
   overflow: hidden;
-
-  min-width: 300px;
 `;
 
 export { Log, Content };

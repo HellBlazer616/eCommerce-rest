@@ -2,19 +2,20 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
 
-import { grey, orange } from './utils/colors';
+import { grey } from './utils/colors';
 import registerSvg from './assets/registerSvg.svg';
 import { Log, Content } from './utils/FormComponent';
 
 const Register = () => {
   const { register, handleSubmit, errors, getValues } = useForm({});
-  const onSubmit = async (data) => console.log(data);
-  console.log(errors.password);
+
+  const onSubmit = (data) => console.log(data);
+  console.log(errors);
   //
   return (
     <Wrapper>
       <Log>
-        <form className="form-control" onSubmit={(e) => e.preventDefault()}>
+        <form className="form-control">
           <h1>Sign up</h1>
 
           <label htmlFor="name">

@@ -39,9 +39,11 @@ const resize = async (req, res, next) => {
     res.json({ ...err });
     return;
   }
-  await image.resize(800, jimp.AUTO);
-  await image.write(`../storage/uploads/${req.body.image}`);
+  await image.resize(200, 200);
+
+  await image.write(`./client/public/uploads/${req.body.image}`);
   // once we have written the image to our filesystem, keep going!
+
   next();
 };
 
