@@ -6,7 +6,7 @@ import { IoIosCloseCircle } from 'react-icons/io';
 import trolley from './assets/trolley.svg';
 import { black, orange, grey } from './utils/colors';
 
-const Navbar = ({ handleCart }) => {
+const Navbar = ({ openCart }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -31,7 +31,7 @@ const Navbar = ({ handleCart }) => {
             </li>
           </ul>
           <div>
-            <button type="button" onClick={handleCart}>
+            <button type="button" onClick={openCart}>
               <i>
                 <img
                   src={trolley}

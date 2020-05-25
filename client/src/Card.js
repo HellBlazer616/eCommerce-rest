@@ -1,14 +1,22 @@
 /* eslint-disable no-return-assign */
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { AiOutlineHeart } from 'react-icons/ai';
+import { TiTick } from 'react-icons/ti';
 import LazyLoad from 'react-lazyload';
 import { orange, black } from './utils/colors';
 import trolley from './assets/trolley.svg';
 
-const Card = ({ product }) => {
-  const { _id, title, stock, unit, price, image } = product;
+const Card = ({ product, addToCart }) => {
+  const [click, setClick] = useState(false);
+
+  const {  title, stock, unit, price, image } = product;
   const heart = useRef(null);
+
+  const handleCartClick = (value) => {
+    setClick(!click);
+    addToCart(value)
+  };
 
   const handleHeart = () => {
     if (
@@ -57,13 +65,17 @@ const Card = ({ product }) => {
           <p>${price}</p>
         </div>
         <div className="content__button">
-          <button type="button">
+          <button type="button" onClick={() => handleCartClick(product)}>
             <i>
-              <img
-                src={trolley}
-                alt="trolley"
-                style={{ width: '50px', height: '50px' }}
-              />
+              {click ? (
+                <TiTick style={{ width: '50px', height: '50px' }} />
+              ) : (
+                <img
+                  src={trolley}
+                  alt="trolley"
+                  style={{ width: '50px', height: '50px' }}
+                />
+              )}
             </i>
           </button>
         </div>
@@ -78,11 +90,11 @@ const CardElement = styled.div`
   flex-direction: column;
   padding: 10px;
   min-width: 250px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  transition: 0.2s all ease-in-out;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  transition: 0.18s all ease;
 
   &:hover {
-    transform: scale(1.1);
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.25);
   }
 
   & .image {
