@@ -22,20 +22,14 @@ const Register = () => {
       return;
     }
     // encoding data for sending to server
-    const encodedData = Object.keys(formData)
-      .map((key) => {
-        return `${encodeURIComponent(key)}=${encodeURIComponent(
-          formData[key]
-        )}`;
-      })
-      .join('&');
+    const encodedData = JSON.stringify(formData);
 
     // making request to the register endpoint at server
     async function setData() {
       await fetch('/api/v1/register', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          'Content-Type': 'application/json',
         },
         body: encodedData,
       })

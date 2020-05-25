@@ -47,11 +47,11 @@ const Navbar = ({ openCart }) => {
             <i>
               {open ? (
                 <IoIosCloseCircle
-                  style={{ width: '30px', height: '30px', color: black }}
+                  style={{ width: '30px', height: '30px', color: orange }}
                 />
               ) : (
                 <TiThMenuOutline
-                  style={{ width: '30px', height: '30px', color: black }}
+                  style={{ width: '30px', height: '30px', color: grey }}
                 />
               )}
             </i>

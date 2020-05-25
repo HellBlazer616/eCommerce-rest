@@ -8,14 +8,13 @@ import { orange, black } from './utils/colors';
 import trolley from './assets/trolley.svg';
 
 const Card = ({ product, addToCart }) => {
-  const [click, setClick] = useState(false);
-
-  const {  title, stock, unit, price, image } = product;
+  const { title, stock, unit, price, image } = product;
+  const { setToCart } = product;
   const heart = useRef(null);
 
-  const handleCartClick = (value) => {
-    setClick(!click);
-    addToCart(value)
+  const handleCartClick = () => {
+    product.setToCart = !product.setToCart;
+    addToCart(product);
   };
 
   const handleHeart = () => {
@@ -65,9 +64,9 @@ const Card = ({ product, addToCart }) => {
           <p>${price}</p>
         </div>
         <div className="content__button">
-          <button type="button" onClick={() => handleCartClick(product)}>
+          <button type="button" onClick={handleCartClick}>
             <i>
-              {click ? (
+              {setToCart ? (
                 <TiTick style={{ width: '50px', height: '50px' }} />
               ) : (
                 <img
