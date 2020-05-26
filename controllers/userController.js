@@ -82,7 +82,7 @@ const updateUser = async (req, res) => {
  * @description finds current users data
  */
 const userInfo = async (req, res) => {
-  console.log(req?.isAuthenticated());
+  console.log(req.isAuthenticated());
   const user = await User.findById(
     // eslint-disable-next-line no-underscore-dangle
     { _id: req.user.id }
