@@ -3,10 +3,25 @@ import styled from '@emotion/styled';
 import { IoIosCloseCircle } from 'react-icons/io';
 import { black, grey } from './utils/colors';
 
-const Order = ({ data, removeOrder }) => {
-  const { _id, title, stock, unit, price, image } = data;
+const Order = ({ data, removeOrder, index, handleOrderQuantity }) => {
+  const { productId, title, price, image, quantity, stock } = data;
+  const [orderPrice, setOrderPrice] = useState(Number(price));
+  const [orderQuantity, setOrderQuantity] = useState(Number(quantity));
 
-  const handleClose = () => removeOrder(_id);
+  const handleClose = () => removeOrder(productId);
+  const handleQuantity = (e) => {
+    const value = Number(e.target.value);
+
+    if (value < 1 || value > Number(stock)) {
+      console.log(`over stock`);
+      return;
+    }
+
+    const newOrderPrice = value * price;
+    setOrderPrice(newOrderPrice);
+    setOrderQuantity(value);
+    handleOrderQuantity(productId, value, newOrderPrice);
+  };
 
   return (
     <OrderElement>
@@ -18,13 +33,44 @@ const Order = ({ data, removeOrder }) => {
         />
       </div>
       <div className="order__info">
-        <h3>{title}</h3>
-        <p>
-          ${price} per {unit}
-        </p>
-        <label htmlFor="quantity">
-          <input type="number" name="quantity" id="quantity" placeholder="1" />
-        </label>
+        <div className="order__element">
+          <label htmlFor="title">
+            <p>Title:</p>
+            <input
+              type="text"
+              name={`title[${index}]`}
+              id="quantity"
+              value={`${title.toUpperCase()}`}
+              disabled
+            />
+          </label>
+        </div>
+
+        <div className="order__element">
+          <label htmlFor="price">
+            <p>Price:</p>
+            <input
+              type="text"
+              name={`orderPrice[${index}]`}
+              id="price"
+              value={orderPrice}
+              disabled
+            />
+          </label>
+        </div>
+        <div className="order__element">
+          <label htmlFor="quantity">
+            <p>Quantity</p>
+            <input
+              type="number"
+              name={`quantity[${index}]`}
+              id="quantity"
+              value={orderQuantity}
+              onChange={handleQuantity}
+              min="1"
+            />
+          </label>
+        </div>
       </div>
       <div className="order__close">
         <button type="button" onClick={handleClose}>
@@ -62,21 +108,28 @@ const OrderElement = styled.div`
     }
   }
   & .order__info {
+    display: flex;
     flex-basis: 60%;
+    flex-direction: column;
 
-    h3 {
-      margin: 0;
-    }
+    & .order__element {
+      label {
+        display: flex;
+        justify-content: space-around;
+      }
 
-    input {
-      display: block;
-      box-sizing: border-box;
-      width: 70%;
-      border-radius: 4px;
-      border: 1px solid #dadce0;
-      padding: 10px 15px;
-      margin-bottom: 10px;
-      font-size: 14px;
+      input {
+        display: inline-block;
+        box-sizing: border-box;
+        margin-left: 10px;
+        width: 100%;
+        border-radius: 4px;
+        border: none;
+        border-bottom: 1px solid #dadce0;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
     }
   }
 

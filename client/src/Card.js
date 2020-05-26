@@ -8,13 +8,22 @@ import { orange, black } from './utils/colors';
 import trolley from './assets/trolley.svg';
 
 const Card = ({ product, addToCart }) => {
-  const { title, stock, unit, price, image } = product;
-  const { setToCart } = product;
+  const { _id, title, stock, unit, price, image } = product;
+  const [click, setClick] = useState(false);
   const heart = useRef(null);
 
   const handleCartClick = () => {
-    product.setToCart = !product.setToCart;
-    addToCart(product);
+    setClick(true);
+    addToCart({
+      productId: _id,
+      title,
+      price,
+      quantity: 1,
+      image,
+      stock,
+      totalPrice: price,
+    });
+    setTimeout(() => setClick(false), 1000);
   };
 
   const handleHeart = () => {
@@ -58,15 +67,16 @@ const Card = ({ product, addToCart }) => {
         <div className="content__info">
           <h3>{title.toUpperCase()}</h3>
           <p>
-            Quantity: {stock}
+            Stock: {stock}
             {unit}
           </p>
+          <p>Quantity: 1{unit}</p>
           <p>${price}</p>
         </div>
         <div className="content__button">
           <button type="button" onClick={handleCartClick}>
             <i>
-              {setToCart ? (
+              {click ? (
                 <TiTick style={{ width: '50px', height: '50px' }} />
               ) : (
                 <img
