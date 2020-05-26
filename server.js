@@ -3,9 +3,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const passportJwt = require('passport-jwt');
+const path = require('path');
 const User = require('./Models/User');
 const router = require('./routes/routes');
-const { notFound } = require('./utils/errorHandlers');
 
 const app = express();
 // passport settings
@@ -43,6 +43,13 @@ app.use(passport.initialize());
 
 app.use('/', router);
 
-app.use(notFound);
+// Serve static asset
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 module.exports = app;

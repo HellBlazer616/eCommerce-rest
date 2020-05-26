@@ -289,6 +289,7 @@ const Cart = styled.aside`
         font-size: 14px;
         background: ${black};
         color: ${grey};
+        cursor: pointer;
       }
       & .bold {
         color: ${black};
