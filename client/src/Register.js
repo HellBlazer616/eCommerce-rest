@@ -2,6 +2,7 @@ import React, { useState, useLayoutEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
 import { navigate } from '@reach/router';
+import { useAlert } from 'react-alert';
 import { grey } from './utils/colors';
 import registerSvg from './assets/registerSvg.svg';
 import { Log, Content } from './utils/FormComponent';
@@ -10,8 +11,8 @@ const Register = () => {
   const { register, handleSubmit, errors, getValues } = useForm({});
   const [formData, setFormData] = useState({});
   const firstUpdate = useRef(true);
+  const alert = useAlert();
   const onSubmit = (data) => {
-    console.log(data);
     setFormData(data);
   };
 
@@ -32,19 +33,19 @@ const Register = () => {
           'Content-Type': 'application/json',
         },
         body: encodedData,
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          if (response.token === undefined) return;
-
-          localStorage.setItem('eCommerce', response.token);
-
-          navigate(`/product`);
-        });
+      }).then(async (response) => {
+        const res = await response.json();
+        if (res.success === false) {
+          alert.error('User with same credential Exists');
+          return;
+        }
+        localStorage.setItem('eCommerce', `${res.token}`);
+        navigate('product');
+      });
     }
 
     setData();
-  }, [formData]);
+  }, [alert, formData]);
 
   return (
     <Wrapper>
@@ -131,8 +132,8 @@ const Register = () => {
             />
           </label>
 
-          {errors.confirmPassword && (
-            <p className="error">{errors.confirmPassword.message}</p>
+          {errors.passwordConfirm && (
+            <p className="error">{errors.passwordConfirm.message}</p>
           )}
 
           <input className="submit" type="submit" />

@@ -8,7 +8,7 @@ import Register from './Register';
 import Product from './Product';
 
 const options = {
-  timeout: 1500,
+  timeout: 3000,
   position: positions.BOTTOM_CENTER,
 };
 

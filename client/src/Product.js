@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { IoIosCloseCircle } from 'react-icons/io';
 import { useAlert } from 'react-alert';
+import { navigate } from '@reach/router';
 import { black, grey } from './utils/colors';
 import Navbar from './Navbar';
 import Card from './Card';
@@ -13,11 +14,14 @@ const Product = () => {
   const [open, setOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const [orderTotalPrice, setOrderTotalPrice] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const alert = useAlert();
 
   const handleOrderSubmit = (event) => {
     event.preventDefault();
-
+    if (!isLoggedIn) {
+      alert.error('You need to be logged in');
+    }
     if (orders.length === 0) {
       alert.error('You have not placed any order');
       return;
@@ -25,13 +29,20 @@ const Product = () => {
 
     const data = orders.map((order) => {
       const { productId, title, quantity, totalPrice: orderPrice } = order;
-      const requiredData = { productId, title, quantity, orderPrice };
+      const requiredData = {
+        productId,
+        title,
+        quantity,
+        orderPrice,
+      };
       return requiredData;
     });
 
     const obj = {
       orderItems: data,
+      totalPrice: orderTotalPrice,
     };
+
     const payload = JSON.stringify(obj);
 
     async function setData() {
@@ -42,7 +53,15 @@ const Product = () => {
           Authorization: `${localStorage.getItem('eCommerce')}`,
         },
         body: payload,
-      }).then((response) => response.json());
+      }).then((response) => {
+        if (response.status === 401) {
+          alert.error('You need to be logged in');
+          setTimeout(() => {
+            navigate('login');
+          }, 2000);
+        }
+        response.json();
+      });
     }
     setData();
     setOrders([]);
@@ -55,6 +74,11 @@ const Product = () => {
 
   // add order to cart
   const addToCart = (value) => {
+    if (!isLoggedIn) {
+      alert.error('You need to be logged in');
+      return;
+    }
+
     if (orders.length === 0) {
       setOrders(orders.slice().concat(value));
       alert.success(`${value.title} placed in cart.`);
@@ -112,6 +136,37 @@ const Product = () => {
   }, []);
 
   useEffect(
+    function isUserLoggedIn() {
+      async function fetchData() {
+        const token = localStorage.getItem('eCommerce');
+        await fetch('/api/v1/verify', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        })
+          .then((response) => {
+            if (response.status === 401) {
+              alert.error('Your are not logged in');
+            }
+            return response.json();
+          })
+          .then((response) => {
+            if (response.login === true) {
+              console.log('logged');
+              setIsLoggedIn(true);
+            }
+          });
+      }
+
+      fetchData();
+      console.log('here');
+    },
+    [alert]
+  );
+
+  useEffect(
     function calculateTotalOrderPrice() {
       const value = orders.reduce((acc, order) => {
         // eslint-disable-next-line no-param-reassign
@@ -126,7 +181,11 @@ const Product = () => {
 
   return (
     <>
-      <Navbar openCart={openCart} />
+      <Navbar
+        openCart={openCart}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+      />
       <Wrapper>
         <Cart open={open}>
           <div className="cart-wrapper">

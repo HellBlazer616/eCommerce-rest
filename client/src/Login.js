@@ -1,16 +1,55 @@
-import React from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import styled from '@emotion/styled';
 import { useForm } from 'react-hook-form';
-import { Link } from '@reach/router';
+import { Link, navigate } from '@reach/router';
+import { useAlert } from 'react-alert';
 import { grey } from './utils/colors';
 import enter from './assets/enter.svg';
 import { Log, Content } from './utils/FormComponent';
 
 const Login = () => {
   const { register, handleSubmit, errors } = useForm({});
-  const onSubmit = async (data) => console.log(data);
-  console.log(errors.password);
-  //
+  const [formData, setFormData] = useState({});
+  const firstUpdate = useRef(true);
+  const alert = useAlert();
+
+  const onSubmit = async (data) => setFormData(data);
+
+  useLayoutEffect(() => {
+    // checking if its the initial mount if so canceling request
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    // encoding data for sending to server
+    const encodedData = JSON.stringify(formData);
+
+    // making request to the register endpoint at server
+    async function setData() {
+      await fetch('/api/v1/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: encodedData,
+      })
+        .then((response) => {
+          if (response.status === 401) {
+            alert.error('Wrong email or password');
+          }
+          return response.json();
+        })
+        .then((response) => {
+          if (response.login === true) {
+            localStorage.setItem('eCommerce', `${response.token}`);
+            navigate('product');
+          }
+        });
+    }
+
+    setData();
+  }, [alert, formData]);
+
   return (
     <Wrapper>
       <Log>

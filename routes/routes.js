@@ -21,6 +21,9 @@ router.use('/api/v1/order', orderRoutes);
 
 router.post('/api/v1/register', validateRegister, register, login, signJwt);
 router.post('/api/v1/login', login, signJwt);
+router.post('/api/v1/verify', requireJwt, (req, res) => {
+  res.json({ login: true });
+});
 
 router.get('/api/v1/account', requireJwt, userInfo);
 router.put('/api/v1/account', requireJwt, updateUser);

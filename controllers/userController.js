@@ -33,7 +33,6 @@ const validateRegister = [
 const register = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('helklo');
     return res.status(422).json({ errors: errors.array() });
   }
 
@@ -43,7 +42,7 @@ const register = async (req, res, next) => {
 
   const [err] = await asyncHandler(User.register(user, password));
   if (err) {
-    res.json({ err });
+    res.json({ success: false, error: err });
   }
   return next();
 };
@@ -61,13 +60,18 @@ const updateUser = async (req, res) => {
 
   console.log(req.user);
 
-  const user = await User.findByIdAndUpdate(
-    // eslint-disable-next-line no-underscore-dangle
-    { _id: req.user._id },
-    { $set: { name, email } },
-    { new: true, runValidators: true, context: 'query' }
+  const [err, user] = asyncHandler(
+    await User.findByIdAndUpdate(
+      // eslint-disable-next-line no-underscore-dangle
+      { _id: req.user._id },
+      { $set: { name, email } },
+      { new: true, runValidators: true, context: 'query' }
+    )
   );
-  res.json(user);
+  if (err) {
+    res.json({ message: err });
+  }
+  res.json({ message: 'Update Success', data: user });
 };
 
 /**
@@ -83,6 +87,6 @@ const userInfo = async (req, res) => {
     // eslint-disable-next-line no-underscore-dangle
     { _id: req.user.id }
   );
-  res.json(user);
+  res.json({ data: user });
 };
 module.exports = { validateRegister, register, updateUser, userInfo };

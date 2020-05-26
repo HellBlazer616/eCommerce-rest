@@ -9,10 +9,7 @@ const { asyncHandler } = require('../utils/errorHandlers');
  */
 const orderSaveController = async (req, res) => {
   const { orderItems } = req.body;
-  console.log(req.body);
   const { _id: customer } = req.user;
-
-  console.log(orderItems);
 
   const [err, data] = await asyncHandler(
     Order.create({ customer, orderItems })
@@ -21,9 +18,7 @@ const orderSaveController = async (req, res) => {
   if (err) {
     return res.json(err);
   }
-
   const { _doc } = data;
-
   return res.json({ ..._doc, message: 'data saved' });
 };
 

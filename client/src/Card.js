@@ -14,6 +14,7 @@ const Card = ({ product, addToCart }) => {
   const heart = useRef(null);
 
   const handleCartClick = () => {
+    console.log(localStorage.getItem('asd'));
     setClick(true);
     addToCart({
       productId: _id,

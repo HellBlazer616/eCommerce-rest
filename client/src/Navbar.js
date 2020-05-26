@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { Link } from '@reach/router';
+import { Link, navigate } from '@reach/router';
 import { TiThMenuOutline } from 'react-icons/ti';
 import { IoIosCloseCircle } from 'react-icons/io';
+import { useAlert } from 'react-alert';
+import PropTypes from 'prop-types';
 import trolley from './assets/trolley.svg';
 import { black, orange, grey } from './utils/colors';
 
-const Navbar = ({ openCart }) => {
+const Navbar = ({ openCart, isLoggedIn, setIsLoggedIn }) => {
   const [open, setOpen] = useState(false);
+  const alert = useAlert();
+  const handleLogout = () => {
+    localStorage.removeItem('eCommerce');
+    setIsLoggedIn(false);
+    alert.success('You have been logged out');
+    setTimeout(() => {
+      navigate('/');
+    }, 1000);
+  };
 
   return (
     <>
@@ -25,9 +36,17 @@ const Navbar = ({ openCart }) => {
               </Link>
             </li>
             <li>
-              <Link className="link" to="/login">
-                Log in
-              </Link>
+              {isLoggedIn ? (
+                <div className="logout">
+                  <button type="button" onClick={handleLogout}>
+                    Log out
+                  </button>
+                </div>
+              ) : (
+                <Link className="link" to="/login">
+                  Log in
+                </Link>
+              )}
             </li>
           </ul>
           <div>
@@ -102,6 +121,12 @@ const Nav = styled.nav`
       text-decoration: none;
       color: inherit;
     }
+    & .logout {
+      button {
+        color: ${grey};
+        font-size: inherit;
+      }
+    }
   }
 
   & .right {
@@ -145,5 +170,11 @@ const Nav = styled.nav`
     }
   }
 `;
+
+Navbar.propTypes = {
+  openCart: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  setIsLoggedIn: PropTypes.func.isRequired,
+};
 
 export default Navbar;

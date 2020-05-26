@@ -27,6 +27,8 @@ const orderSchema = new mongoose.Schema(
       },
     ],
 
+    totalPrice: Number,
+
     completed: {
       type: Boolean,
       default: false,
@@ -34,13 +36,5 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-orderSchema.virtual('totalPrice').get(() => {
-  return this.orderItems.reduce((totalPrice, item) => {
-    // eslint-disable-next-line no-param-reassign
-    totalPrice += item.price;
-    return totalPrice;
-  }, 0);
-});
 
 module.exports = mongoose.model('Order', orderSchema);
