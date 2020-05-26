@@ -1,4 +1,5 @@
 const Order = require('../Models/Order');
+const User = require('../Models/User');
 const { asyncHandler } = require('../utils/errorHandlers');
 
 /**
@@ -8,15 +9,26 @@ const { asyncHandler } = require('../utils/errorHandlers');
  * @returns data save confirmation
  */
 const orderSaveController = async (req, res) => {
-  const { orderItems } = req.body;
+  const { orderItems, totalPrice } = req.body;
   const { _id: customer } = req.user;
 
   const [err, data] = await asyncHandler(
-    Order.create({ customer, orderItems })
+    Order.create({ customer, orderItems, totalPrice })
+  );
+
+  const [userErr, user] = await asyncHandler(
+    User.findByIdAndUpdate(
+      customer,
+      { $push: { orders: data._id } },
+      { new: true }
+    )
   );
 
   if (err) {
     return res.json(err);
+  }
+  if (userErr) {
+    return res.json(userErr);
   }
   const { _doc } = data;
   return res.json({ ..._doc, message: 'data saved' });

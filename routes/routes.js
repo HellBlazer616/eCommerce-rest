@@ -11,11 +11,6 @@ const { login, requireJwt, signJwt } = require('../controllers/authController');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  console.log(req?.user);
-  res.json({ greetings: 'Hello' });
-});
-
 router.use('/api/v1/product', productRoutes);
 router.use('/api/v1/order', orderRoutes);
 

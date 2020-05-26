@@ -18,6 +18,13 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  orders: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: 'An order must have a customer',
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose, {

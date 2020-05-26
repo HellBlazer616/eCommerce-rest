@@ -11,13 +11,6 @@ const {
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  console.log(req.query);
-  res.json({
-    greetings: 'product',
-  });
-});
-
 // get products
 router.get('/get', queryValidator, getProduct);
 

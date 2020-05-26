@@ -130,7 +130,7 @@ const getProduct = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  const { limit = 0, category, title, stock, price, sort } = req.query;
+  const { limit = 10, category, title, stock, price, sort } = req.query;
   console.log(category.length);
 
   const customQuery = {};

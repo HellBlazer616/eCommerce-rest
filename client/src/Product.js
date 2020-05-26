@@ -154,14 +154,11 @@ const Product = () => {
           })
           .then((response) => {
             if (response.login === true) {
-              console.log('logged');
               setIsLoggedIn(true);
             }
           });
       }
-
       fetchData();
-      console.log('here');
     },
     [alert]
   );
