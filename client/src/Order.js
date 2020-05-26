@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { IoIosCloseCircle } from 'react-icons/io';
-import { black, grey } from './utils/colors';
+import PropTypes from 'prop-types';
+import { grey } from './utils/colors';
 
-const Order = ({ data, removeOrder, index, handleOrderQuantity }) => {
+const Order = ({ data, removeOrder, handleOrderQuantity }) => {
   const { productId, title, price, image, quantity, stock } = data;
   const [orderPrice, setOrderPrice] = useState(Number(price));
   const [orderQuantity, setOrderQuantity] = useState(Number(quantity));
@@ -38,7 +39,6 @@ const Order = ({ data, removeOrder, index, handleOrderQuantity }) => {
             <p>Title:</p>
             <input
               type="text"
-              name={`title[${index}]`}
               id="quantity"
               value={`${title.toUpperCase()}`}
               disabled
@@ -49,13 +49,7 @@ const Order = ({ data, removeOrder, index, handleOrderQuantity }) => {
         <div className="order__element">
           <label htmlFor="price">
             <p>Price:</p>
-            <input
-              type="text"
-              name={`orderPrice[${index}]`}
-              id="price"
-              value={orderPrice}
-              disabled
-            />
+            <input type="text" id="price" value={orderPrice} disabled />
           </label>
         </div>
         <div className="order__element">
@@ -63,7 +57,6 @@ const Order = ({ data, removeOrder, index, handleOrderQuantity }) => {
             <p>Quantity</p>
             <input
               type="number"
-              name={`quantity[${index}]`}
               id="quantity"
               value={orderQuantity}
               onChange={handleQuantity}
@@ -91,6 +84,7 @@ const OrderElement = styled.div`
   border: 1px solid #dadce0;
   margin-bottom: 1rem;
   flex-basis: 100%;
+  background: ${grey};
 
   @media only screen and (max-width: 1024px) {
     flex-direction: column;
@@ -142,5 +136,12 @@ const OrderElement = styled.div`
     }
   }
 `;
+
+Order.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  data: PropTypes.object.isRequired,
+  removeOrder: PropTypes.func.isRequired,
+  handleOrderQuantity: PropTypes.func.isRequired,
+};
 
 export default Order;

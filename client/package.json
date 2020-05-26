@@ -10,6 +10,8 @@
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"react": "^16.13.1",
+		"react-alert": "^7.0.1",
+		"react-alert-template-basic": "^1.0.0",
 		"react-dom": "^16.13.1",
 		"react-hook-form": "^5.7.2",
 		"react-icons": "^3.10.0",

@@ -12,6 +12,8 @@ const orderSaveController = async (req, res) => {
   console.log(req.body);
   const { _id: customer } = req.user;
 
+  console.log(orderItems);
+
   const [err, data] = await asyncHandler(
     Order.create({ customer, orderItems })
   );

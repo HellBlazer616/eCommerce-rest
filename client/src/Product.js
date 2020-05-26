@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { IoIosCloseCircle } from 'react-icons/io';
+import { useAlert } from 'react-alert';
 import { black, grey } from './utils/colors';
 import Navbar from './Navbar';
 import Card from './Card';
@@ -11,22 +12,26 @@ const Product = () => {
   const [products, setProducts] = useState([]);
   const [open, setOpen] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [orderTotalPrice, setOrderTotalPrice] = useState(0);
+  const alert = useAlert();
 
   const handleOrderSubmit = (event) => {
     event.preventDefault();
 
+    if (orders.length === 0) {
+      alert.error('You have not placed any order');
+      return;
+    }
+
     const data = orders.map((order) => {
       const { productId, title, quantity, totalPrice: orderPrice } = order;
-
       const requiredData = { productId, title, quantity, orderPrice };
-      console.log(requiredData);
       return requiredData;
     });
 
     const obj = {
       orderItems: data,
     };
-
     const payload = JSON.stringify(obj);
 
     async function setData() {
@@ -37,18 +42,14 @@ const Product = () => {
           Authorization: `${localStorage.getItem('eCommerce')}`,
         },
         body: payload,
-      })
-        .then((response) => response.json())
-        .then((response) => {
-          console.log(response);
-        });
+      }).then((response) => response.json());
     }
     setData();
     setOrders([]);
+    alert.success('Your Order has been placed');
   };
   // toggle cart
   const openCart = () => {
-    console.log(open);
     setOpen(!open);
   };
 
@@ -56,18 +57,19 @@ const Product = () => {
   const addToCart = (value) => {
     if (orders.length === 0) {
       setOrders(orders.slice().concat(value));
+      alert.success(`${value.title} placed in cart.`);
       return;
     }
     const checkDuplicate = orders.findIndex((element) => {
-      return element._id === value.productId;
+      return element.productId === value.productId;
     });
-    // if a placed item is sent again that product is removed
+
+    // if a placed item is sent again that product quantity is increased by 1
     if (checkDuplicate > -1) {
-      const remove = [...orders];
-      remove.splice(checkDuplicate, 1);
-      setOrders(remove);
+      alert.info(`${value.title} already in cart.`);
     } else {
       setOrders(orders.slice().concat(value));
+      alert.success(`${value.title} placed in cart.`);
     }
   };
   // remover order from cart
@@ -75,21 +77,25 @@ const Product = () => {
     const ItemToRemove = orders.findIndex((element) => {
       return element._id === id;
     });
-    orders[ItemToRemove].setToCart = !orders[ItemToRemove].setToCart;
+
     const orderCopy = orders.slice();
-    orderCopy.splice(ItemToRemove, 1);
+    const removedOrderItem = orderCopy.splice(ItemToRemove, 1);
+
+    alert.show(`${removedOrderItem[0].title} removed from Cart`);
     setOrders(orderCopy);
   };
 
   // setting order quantity
   const handleOrderQuantity = (id, quantity, price) => {
-    console.log(`id ${id} quantity ${quantity}`);
     const targetItem = orders.findIndex((element) => {
       return element.productId === id;
     });
 
-    orders[targetItem].quantity = quantity;
-    orders[targetItem].totalPrice = price;
+    const newOrders = [...orders];
+    newOrders[targetItem].quantity = quantity;
+    newOrders[targetItem].totalPrice = price;
+
+    setOrders(newOrders);
   };
 
   // fetching products from database
@@ -104,6 +110,19 @@ const Product = () => {
 
     fetchData();
   }, []);
+
+  useEffect(
+    function calculateTotalOrderPrice() {
+      const value = orders.reduce((acc, order) => {
+        // eslint-disable-next-line no-param-reassign
+        acc += order.totalPrice * order.quantity;
+        return acc;
+      }, 0);
+
+      setOrderTotalPrice(value);
+    },
+    [orders]
+  );
 
   return (
     <>
@@ -129,9 +148,15 @@ const Product = () => {
                 );
               })}
               {orders.length > 0 ? (
-                <input className="submit" type="submit" value="Place Order" />
+                <>
+                  <p className="bold">Grand Total: {orderTotalPrice}</p>
+                  <input className="submit" type="submit" value="Place Order" />
+                </>
               ) : (
-                <input className="submit" type="submit" value="Empty Order" />
+                <>
+                  <p className="bold">Empty Order</p>
+                  <p className="bold">Grand Total: {orderTotalPrice}</p>
+                </>
               )}
             </form>
           </div>
@@ -155,6 +180,7 @@ const Wrapper = styled.div`
   color: ${black};
   /* max-width: 1500px;
   margin: auto; */
+  overflow-x: hidden;
 `;
 
 const Row = styled.div`
@@ -163,6 +189,7 @@ const Row = styled.div`
   flex-wrap: wrap;
   color: black;
 `;
+
 const Cart = styled.aside`
   display: ${({ open }) => (open ? 'flex' : 'none')};
   position: absolute;
@@ -175,6 +202,7 @@ const Cart = styled.aside`
   border: 1px solid #dadce0;
   max-height: 80vh;
   overflow-y: scroll;
+  background-color: rgba(238, 238, 238, 0.7);
 
   & .cart-wrapper {
     display: flex;
@@ -206,11 +234,15 @@ const Cart = styled.aside`
         background: ${black};
         color: ${grey};
       }
+      & .bold {
+        color: ${black};
+        font-weight: 800;
+      }
     }
   }
 
   @media only screen and (max-width: 1024px) {
-    width: 50vw;
+    width: 80vw;
   }
 `;
 

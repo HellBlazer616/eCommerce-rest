@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { TiTick } from 'react-icons/ti';
 import LazyLoad from 'react-lazyload';
+import PropTypes from 'prop-types';
 import { orange, black } from './utils/colors';
 import trolley from './assets/trolley.svg';
 
@@ -150,5 +151,11 @@ const CardElement = styled.div`
     }
   }
 `;
+
+Card.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  product: PropTypes.object.isRequired,
+  addToCart: PropTypes.func.isRequired,
+};
 
 export default Card;
