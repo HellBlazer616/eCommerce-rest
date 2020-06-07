@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const passportJwt = require('passport-jwt');
 const path = require('path');
+const compression = require('compression');
 const User = require('./Models/User');
 const router = require('./routes/routes');
 
@@ -36,6 +37,7 @@ passport.use(
 // registering middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(compression());
 app.use(cookieParser());
 
 app.use(passport.initialize());

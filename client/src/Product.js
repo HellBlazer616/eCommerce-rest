@@ -88,7 +88,7 @@ const Product = () => {
       return element.productId === value.productId;
     });
 
-    // if a placed item is sent again that product quantity is increased by 1
+    // if a placed item is sent again messahe shown
     if (checkDuplicate > -1) {
       alert.info(`${value.title} already in cart.`);
     } else {

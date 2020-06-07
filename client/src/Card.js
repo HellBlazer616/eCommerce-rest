@@ -87,6 +87,7 @@ const Card = ({ product, addToCart }) => {
                   style={{ width: '50px', height: '50px' }}
                 />
               )}
+              Cart Button
             </i>
           </button>
         </div>
@@ -145,6 +146,8 @@ const CardElement = styled.div`
       border: 1px solid ${orange};
       outline-color: ${orange};
       cursor: pointer;
+      font-size: 0;
+line-height: 0;
 
       & :active {
         transform: scale(0.95);
